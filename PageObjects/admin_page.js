@@ -1,19 +1,23 @@
+const { test, expect } = require('@playwright/test')
 class Systemusers {
     constructor(page) {
         this.page = page
         //
         this.userRoleDropdown = page.locator('.oxd-select-text-input').first()
+        this.StatusDropdown = page.locator('.oxd-select-text').last()
 
     }
     //admin tab
     async openAdminPage() {
-        await this.page.locator('.oxd-main-menu-item')//await this.page.getByRole('link', { name: 'Admin' }).click();
-            .filter({ hasText: 'Admin' })
-            .click()
+        await this.page.getByRole('link', { name: 'Admin' }).click()
     }
     //username
     async Username(username) {
-        await this.page.locator('.oxd-form-row .oxd-input').fill(username)
+        const userField = await this.page.locator('.oxd-form-row .oxd-input')
+        await userField.fill(username)
+        await expect(userField).toHaveValue(username)
+        const value = await userField.inputValue();
+        console.log(value);
     }
     async UserRole() {
         //User role
@@ -31,6 +35,13 @@ class Systemusers {
                 break
             }
         }
+    }
+    //
+    async EmployeeStatus() {
+        await this.StatusDropdown.click()
+
+        await this.page.getByRole('option', { name: 'Enabled' }).click()
+        await expect(this.StatusDropdown).toHaveText('Enabled')
     }
 
 

@@ -1,11 +1,22 @@
 
-const { test, expect } = require('../fixtures/testDataFixture')
+require('dotenv').config();
 
-test('login functionality with valid credentials', async ({ page }) => {
-  //const loginpage = new LoginFunction(page)
-  await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index')
-  //await page.goto('/')
-  await expect(page).toHaveURL(/dashboard/);
+const { test, expect } = require('../fixtures/testDataFixture');
+
+test.use({
+    storageState: {
+        cookies: [],
+        origins: []
+    }
 });
 
+test('login functionality with valid credentials', async ({ loginpage, page }) => {
+    await loginpage.openUrl();
 
+    await loginpage.Userlogin(
+        process.env.HRM_USERNAME,
+        process.env.HRM_PASSWORD
+    );
+
+    await expect(page).toHaveURL(/dashboard/);
+});
